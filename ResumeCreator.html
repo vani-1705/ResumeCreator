@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customizable Resume Builder</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .hidden { display: none; }
+    .btn { margin: 10px 5px; padding: 10px 15px; cursor: pointer; border: none; border-radius: 5px; }
+    .btn-primary { background-color: #007BFF; color: white; }
+    .btn-secondary { background-color: #6c757d; color: white; }
+    .resume { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .template-thumb { width: 150px; height: 200px; border: 2px solid transparent; cursor: pointer; margin: 5px; object-fit: cover; }
+    .template-thumb.selected { border-color: #007BFF; }
+    #printable { padding: 20px; }
+    h2 { color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Step 1: Template Selection -->
+    <div id="template-section">
+      <h2>Select Your Resume Template</h2>
+      <p>Please choose from one of the sample templates below:</p>
+      <div id="template-options">
+        <!-- Sample template thumbnails using data URI images (dummy images here) -->
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABdCAYAAAAnURvOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABpklEQVR4nO3bQQ6EIBCF4X//6U3h3GC9yXGiRsnIkH/Oe8mZAmADZNAZ02AZ02AZ02AZ02AZ02AZ0+5Uj/e1WWKd3afZN6cikbVzfy82hPq2H0dQerYfR1B6th9H0Hq2H0dQerYfR1B6th9H0Hq2H0dQerYfR1B6th9H0Hq2H0dQerYfR1B6th9H0Hq2H0dQerYfR1B6tw+8u39zIhP7pVgNnYBal2AZ02AZ02AZ02AZ02AZ02AZ02AZ06AX9+Z0T3tnKp2AAAAAElFTkSuQmCC" alt="Template 1" class="template-thumb" data-template="modern">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABdCAYAAAAnURvOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABsklEQVR4nO3bQQrDIBAF0Pn/6cx3G5ARJEuC37nhHnau6CJB4D0B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B1B9D+4BHc+Mt8HIswAAAABJRU5ErkJggg==" alt="Template 2" class="template-thumb" data-template="classic">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABdCAYAAAAnURvOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABpElEQVR4nO3bQRKCIBAEwHf/v53HdPhwYlR4aw+0M5Dfg6fI8sgwC/0OG4Ey9dRteb9/zwo5rrv/p6/v/vr6+vv/7+3ozvu/s7l/ueT1z/MPvP8mz+h3/vpN3T7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP7/tTPtP5/M1kAP8cfSZYAAAAAElFTkSuQmCC" alt="Template 3" class="template-thumb" data-template="modern-colorful">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABdCAYAAAAnURvOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABpUlEQVR4nO3bQWoDQRSG4VPA//9d8lh8FvQK3aCETZZKSRb2bOJJbd5n4ZLJJ9/1d77w4AAAAAAAAAAAAAAAD4D3MFC9l5dxqD6DjR+DQb1nYF6TeBQNNcAf5pY1lvjo7b8UR3aWvUR4F6PeB4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0nfQeCdJ30HgnSd9B4J0n/Tvd0eP/k4pYL6QAAAABJRU5ErkJggg==" alt="Template 4" class="template-thumb" data-template="dark">
+      </div>
+      <br>
+      <button class="btn btn-primary" onclick="selectTemplate()">Confirm Template</button>
+    </div>
+
+    <!-- Step 2: Customization Options -->
+    <div id="customize-section" class="hidden">
+      <h2>Customize Your Resume</h2>
+      <label for="fontSelect">Select Font:</label>
+      <select id="fontSelect">
+        <option value="Arial">Arial</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Roboto">Roboto</option>
+        <option value="Poppins">Poppins</option>
+      </select><br><br>
+
+      <label for="bgColor">Select Background Color:</label>
+      <input type="color" id="bgColor" value="#ffffff"><br><br>
+
+      <button class="btn btn-primary" onclick="goToForm()">Next</button>
+    </div>
+
+    <!-- Step 3: Resume Data Form -->
+    <div id="form-section" class="hidden">
+      <h2>Enter Your Details</h2>
+      <form id="resumeForm">
+        <label>Full Name:</label><br>
+        <input type="text" id="name"><br><br>
+        <label>Job Title / Career Objective:</label><br>
+        <input type="text" id="title"><br><br>
+        <label>Email:</label><br>
+        <input type="email" id="email"><br><br>
+        <label>Phone Number:</label><br>
+        <input type="text" id="phone"><br><br>
+        <label>Address:</label><br>
+        <input type="text" id="address"><br><br>
+        <label>LinkedIn Profile:</label><br>
+        <input type="url" id="linkedin"><br><br>
+        <label>GitHub / Portfolio Link:</label><br>
+        <input type="url" id="github"><br><br>
+        <label>Skills (comma separated):</label><br>
+        <input type="text" id="skills"><br><br>
+        <label>Languages:</label><br>
+        <input type="text" id="languages"><br><br>
+        <label>Certifications:</label><br>
+        <input type="text" id="certifications"><br><br>
+        <label>Work Experience (Company, Role, Dates, Description):</label><br>
+        <textarea id="experience" rows="4"></textarea><br><br>
+        <label>Education (Institution, Degree, Year):</label><br>
+        <textarea id="education" rows="4"></textarea><br><br>
+        <label>Projects (Title, Tools, Description):</label><br>
+        <textarea id="projects" rows="4"></textarea><br><br>
+        <label>Achievements / Awards:</label><br>
+        <textarea id="achievements" rows="2"></textarea><br><br>
+        <label>Hobbies / Interests:</label><br>
+        <input type="text" id="hobbies"><br><br>
+        <button class="btn btn-primary" type="button" onclick="generateResume()">Generate Resume</button>
+      </form>
+    </div>
+
+    <!-- Step 4: Resume Preview -->
+    <div id="preview-section" class="hidden">
+      <h2>Your Resume Preview</h2>
+      <div id="printable" class="resume">
+        <div id="resumeContent">
+          <h1 id="pName"></h1>
+          <h3 id="pTitle"></h3>
+          <p id="pEmail"></p>
+          <p id="pPhone"></p>
+          <p id="pAddress"></p>
+          <p id="pLinkedin"></p>
+          <p id="pGithub"></p>
+          <hr>
+          <h3>Professional Summary</h3>
+          <p id="pSummary"></p>
+          <h3>Skills</h3>
+          <p id="pSkills"></p>
+          <h3>Work Experience</h3>
+          <p id="pExperience"></p>
+          <h3>Education</h3>
+          <p id="pEducation"></p>
+          <h3>Projects</h3>
+          <p id="pProjects"></p>
+          <h3>Achievements / Awards</h3>
+          <p id="pAchievements"></p>
+          <h3>Hobbies / Interests</h3>
+          <p id="pHobbies"></p>
+        </div>
+      </div>
+      <br>
+      <button class="btn btn-secondary" onclick="editResume()">Edit</button>
+      <!-- PDF download using window.print() -->
+      <button class="btn btn-primary" onclick="downloadPDF()">Download as PDF</button>
+      <!-- For image download, since inline conversion without external libs is limited -->
+      <button class="btn btn-primary" onclick="downloadImage()">Download as Image</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedTemplate = "modern";
+    const templateThumbs = document.querySelectorAll(".template-thumb");
+    templateThumbs.forEach(thumb => {
+      thumb.addEventListener("click", function() {
+        templateThumbs.forEach(t => t.classList.remove("selected"));
+        this.classList.add("selected");
+        selectedTemplate = this.dataset.template;
+      });
+    });
+
+    function selectTemplate() {
+      document.getElementById("template-section").classList.add("hidden");
+      document.getElementById("customize-section").classList.remove("hidden");
+    }
+
+    function goToForm() {
+      document.getElementById("customize-section").classList.add("hidden");
+      document.getElementById("form-section").classList.remove("hidden");
+    }
+
+    function generateResume() {
+      // Get customization options
+      const font = document.getElementById("fontSelect").value;
+      const bgColor = document.getElementById("bgColor").value;
+      // Set resume style
+      const printable = document.getElementById("printable");
+      printable.style.fontFamily = font;
+      printable.style.backgroundColor = bgColor;
+
+      // Fill in resume details
+      document.getElementById("pName").innerText = document.getElementById("name").value;
+      document.getElementById("pTitle").innerText = document.getElementById("title").value;
+      document.getElementById("pEmail").innerText = "Email: " + document.getElementById("email").value;
+      document.getElementById("pPhone").innerText = "Phone: " + document.getElementById("phone").value;
+      document.getElementById("pAddress").innerText = "Address: " + document.getElementById("address").value;
+      document.getElementById("pLinkedin").innerText = "LinkedIn: " + document.getElementById("linkedin").value;
+      document.getElementById("pGithub").innerText = "GitHub: " + document.getElementById("github").value;
+      // Optional: you can add a summary field if needed; currently left blank.
+      document.getElementById("pSummary").innerText = "";
+      document.getElementById("pSkills").innerText = "Skills: " + document.getElementById("skills").value;
+      document.getElementById("pExperience").innerText = document.getElementById("experience").value;
+      document.getElementById("pEducation").innerText = document.getElementById("education").value;
+      document.getElementById("pProjects").innerText = document.getElementById("projects").value;
+      document.getElementById("pAchievements").innerText = document.getElementById("achievements").value;
+      document.getElementById("pHobbies").innerText = document.getElementById("hobbies").value;
+
+      // Apply selected template styles to the preview
+      applyTemplateStyle();
+
+      document.getElementById("form-section").classList.add("hidden");
+      document.getElementById("preview-section").classList.remove("hidden");
+    }
+
+    function applyTemplateStyle() {
+      const printable = document.getElementById("printable");
+      if (selectedTemplate === "modern") {
+        printable.style.border = "2px solid #007BFF";
+      } else if (selectedTemplate === "classic") {
+        printable.style.border = "2px solid #000";
+      } else if (selectedTemplate === "modern-colorful") {
+        printable.style.border = "2px dashed #FF5733";
+      } else if (selectedTemplate === "dark") {
+        printable.style.border = "2px solid #444";
+        printable.style.backgroundColor = "#222";
+        printable.style.color = "#fff";
+      }
+    }
+
+    function editResume() {
+      document.getElementById("preview-section").classList.add("hidden");
+      document.getElementById("form-section").classList.remove("hidden");
+    }
+
+    // PDF download using window.print() (this uses browser's built-in print-to-PDF option)
+    function downloadPDF() {
+      window.print();
+    }
+
+    // Image download fallback – without external libraries conversion is limited.
+    function downloadImage() {
+      alert("Due to browser limitations and to keep the code self-contained, please use your system's screenshot tool to capture the resume as an image.");
+    }
+  </script>
+</body>
+</html>
