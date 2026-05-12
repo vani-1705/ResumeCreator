@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Resume Creator Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&family=Cormorant+Garamond:wght@400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"/>
+<style>
+/* ══════════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --bg:#f0f4ff;
+  --panel:#ffffff;
+  --text:#1e293b;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --radius:16px;
+  --shadow:0 4px 24px rgba(37,99,235,.10);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.app{display:grid;grid-template-columns:420px 1fr;min-height:100vh;}
+@media(max-width:900px){.app{grid-template-columns:1fr;}}
+
+/* ══════════════════════════════════════════
+   LEFT PANEL — FORM
+══════════════════════════════════════════ */
+.form-panel{
+  background:var(--panel);
+  border-right:1.5px solid var(--border);
+  overflow-y:auto;
+  max-height:100vh;
+  position:sticky;top:0;
+  padding:28px 24px 60px;
+}
+.form-panel::-webkit-scrollbar{width:4px;}
+.form-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+.brand{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1.5px solid var(--border);
+}
+.brand-icon{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.brand h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.brand span{font-size:11px;color:var(--muted);display:block;font-weight:400;}
+
+/* SECTION TABS */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.tab-btn{
+  padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);
+  background:transparent;cursor:pointer;font-size:12px;font-weight:600;
+  color:var(--muted);transition:.2s;font-family:'DM Sans',sans-serif;
+}
+.tab-btn.active{background:var(--accent);color:white;border-color:var(--accent);}
+.tab-btn:hover:not(.active){border-color:var(--accent);color:var(--accent);}
+
+/* TAB CONTENT */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* FORM GROUPS */
+.form-group{margin-bottom:14px;}
+.form-group label{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;
+}
+.form-group input,
+.form-group textarea,
+.form-group select{
+  width:100%;padding:10px 14px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  background:#f8fafc;color:var(--text);outline:none;
+  transition:border .2s;
+}
+.form-group input:focus,
+.form-group textarea:focus{border-color:var(--accent);background:white;}
+.form-group textarea{resize:vertical;min-height:80px;}
+.iti{width:100%;}
+.iti input{width:100%;}
+
+/* SECTION HEADER */
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1.5px solid var(--border);
+}
+.section-head h3{
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:700;
+  display:flex;align-items:center;gap:8px;
+}
+.section-head .icon{font-size:18px;}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.toggle{
+  position:relative;width:36px;height:20px;
+  background:#cbd5e1;border-radius:20px;cursor:pointer;transition:.2s;
+}
+.toggle.on{background:var(--accent);}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:14px;height:14px;border-radius:50%;background:white;
+  transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.toggle.on::after{left:19px;}
+
+/* ADD / REMOVE BUTTONS */
+.add-btn{
+  width:100%;padding:10px;border:1.5px dashed var(--accent);
+  border-radius:10px;background:transparent;color:var(--accent);
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:.2s;font-family:'DM Sans',sans-serif;margin-top:8px;
+}
+.add-btn:hover{background:#eff6ff;}
+.remove-btn{
+  padding:4px 10px;border:none;background:#fee2e2;color:#dc2626;
+  border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;
+  float:right;margin-bottom:8px;
+}
+.entry-card{
+  background:#f8fafc;border-radius:12px;
+  padding:14px;margin-bottom:10px;border:1.5px solid var(--border);
+}
+
+/* SKILL TAGS */
+.skill-input-row{display:flex;gap:8px;margin-bottom:10px;}
+.skill-input-row input{flex:1;}
+.skill-input-row button{
+  padding:10px 14px;border:none;border-radius:10px;
+  background:var(--accent);color:white;cursor:pointer;font-size:18px;
+}
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.skill-tag{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:20px;
+  background:#eff6ff;color:var(--accent);
+  font-size:12px;font-weight:600;border:1.5px solid #bfdbfe;
+}
+.skill-tag button{
+  border:none;background:none;color:#93c5fd;cursor:pointer;
+  font-size:14px;line-height:1;padding:0;
+}
+
+/* TEMPLATE PICKER */
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.tpl-card{
+  border:2px solid var(--border);border-radius:12px;
+  padding:12px 10px;cursor:pointer;text-align:center;
+  transition:.2s;background:#f8fafc;
+}
+.tpl-card:hover{border-color:var(--accent);}
+.tpl-card.active{border-color:var(--accent);background:#eff6ff;}
+.tpl-card .tpl-icon{font-size:26px;margin-bottom:6px;}
+.tpl-card .tpl-name{font-size:12px;font-weight:700;}
+.tpl-card .tpl-desc{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* COLOR SWATCHES */
+.color-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.swatch{
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:.15s;
+}
+.swatch.active{border-color:var(--text);transform:scale(1.15);}
+
+/* PHOTO UPLOAD */
+.photo-upload-area{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:20px;text-align:center;cursor:pointer;
+  transition:.2s;background:#f8fafc;position:relative;
+}
+.photo-upload-area:hover{border-color:var(--accent);}
+.photo-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+#photoPreview{
+  width:70px;height:70px;border-radius:50%;
+  object-fit:cover;display:none;
+  margin:0 auto 8px;border:3px solid var(--accent);
+}
+
+/* GENERATE BUTTON */
+.gen-btn{
+  width:100%;padding:16px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;font-size:15px;font-weight:700;
+  cursor:pointer;margin-top:16px;
+  font-family:'Syne',sans-serif;letter-spacing:.03em;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 16px rgba(37,99,235,.3);
+}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,.4);}
+
+/* ══════════════════════════════════════════
+   RIGHT PANEL — PREVIEW
+══════════════════════════════════════════ */
+.preview-panel{
+  padding:30px;
+  display:flex;flex-direction:column;align-items:center;
+  background:#e8edf5;
+  min-height:100vh;
+}
+.preview-toolbar{
+  display:flex;gap:10px;margin-bottom:24px;
+  flex-wrap:wrap;justify-content:center;
+}
+.tool-btn{
+  padding:10px 20px;border-radius:10px;border:none;
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:.15s;
+  display:flex;align-items:center;gap:6px;
+}
+.tool-btn.pdf{background:#ef4444;color:white;}
+.tool-btn.png{background:#10b981;color:white;}
+.tool-btn.print{background:#6366f1;color:white;}
+.tool-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
+/* A4 RESUME SHEET */
+#resumeSheet{
+  width:794px;min-height:1123px;
+  background:white;
+  box-shadow:0 8px 40px rgba(0,0,0,.18);
+  position:relative;
+  overflow:hidden;
+}
+@media(max-width:900px){
+  #resumeSheet{width:100%;min-height:auto;}
+}
+
+/* ══════════════════════════════════════════
+   TEMPLATE 1 — MODERN (Two Column)
+══════════════════════════════════════════ */
+.tpl-modern{font-family:'DM Sans',sans-serif;}
+.tpl-modern .r-header{
+  background:linear-gradient(135deg,#1e40af,#7c3aed);
+  padding:32px 36px;color:white;
+  display:flex;align-items:center;gap:24px;
+}
+.tpl-modern .r-photo{
+  width:90px;height:90px;border-radius:50%;
+  object-fit:cover;border:3px solid rgba(255,255,255,.5);
+  flex-shrink:0;
+}
+.tpl-modern .r-photo-placeholder{
+  width:90px;height:90px;border-radius:50%;
+  background:rgba(255,255,255,.2);display:flex;
+  align-items:center;justify-content:center;
+  font-size:36px;flex-shrink:0;border:3px solid rgba(255,255,255,.3);
+}
+.tpl-modern .r-name{font-size:28px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+.tpl-modern .r-role{font-size:13px;opacity:.8;margin-bottom:10px;}
+.tpl-modern .r-contacts{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;opacity:.9;}
+.tpl-modern .r-contacts span{display:flex;align-items:center;gap:4px;}
+
+.tpl-modern .r-body{display:grid;grid-template-columns:220px 1fr;min-height:900px;}
+.tpl-modern .r-sidebar{background:#f0f4ff;padding:24px 20px;}
+.tpl-modern .r-main{padding:24px 28px;}
+
+.tpl-modern .r-sec-title{
+  font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:#1e40af;
+  margin-bottom:10px;padding-bottom:6px;
+  border-bottom:2px solid #bfdbfe;
+}
+.tpl-modern .r-sec{margin-bottom:20px;}
+.tpl-modern .r-skill-tag{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  background:#dbeafe;color:#1e40af;font-size:11px;
+  font-weight:600;margin:2px;
+}
+.tpl-modern .r-entry{margin-bottom:14px;}
+.tpl-modern .r-entry-title{font-size:14px;font-weight:700;color:#1e293b;}
+.tpl-modern .r-entry-sub{font-size:12px;color:#7c3aed;font-weight:600;}
+.tpl-modern .r-entry-date{font-size:11px;color:#94a3b8;}
+.tpl-modern .r-entry-desc{font-size:12px;color:#475569;margin-top:4px;line-height:1.6;}
+.tpl-modern .r-lang-item{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:6px;font-size:12px;
+}
+.tpl-modern .r-lang-bar{
+  height:4px;background:#dbeafe;border-radius:4px;flex:1;margin-left:10px;overflow:hidden;
+}
+.tpl-modern .r-lang-fill{height:100%;background:#1e40af;border-radius:4px;}
+
+/* ══════════════════════════════════════════
+   TEMPLATE 2 — CLASSIC
+══════════════════════════════════════════ */
+.tpl-classic{font-family:'Cormorant Garamond',serif;padding:48px;}
+.tpl-classic .r-header{text-align:center;margin-bottom:20px;border-bottom:2px solid #1e293b;padding-bottom:16px;}
+.tpl-classic .r-name{font-size:32px;font-weight:600;letter-spacing:.05em;color:#1e293b;}
+.tpl-classic .r-contacts{font-size:12px;color:#475569;margin-top:6px;font-family:'DM Sans',sans-serif;}
+.tpl-classic .r-contacts span{margin:0 8px;}
+.tpl-classic .r-photo{width:75px;height:75px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block;border:2px solid #1e293b;}
+.tpl-classic .r-sec-title{
+  font-size:13px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;color:#1e293b;
+  margin:16px 0 8px;font-family:'DM Sans',sans-serif;
+  border-bottom:1px solid #94a3b8;padding-bottom:4px;
+}
+.tpl-classic .r-entry{margin-bottom:10px;}
+.tpl-classic .r-entry-row{display:flex;justify-content:space-between;align-items:baseline;}
+.tpl-classic .r-entry-title{font-size:14px;font-weight:600;}
+.tpl-classic .r-entry-date{font-size:11px;color:#64748b;font-family:'DM Sans',sans-serif;}
+.tpl-classic .r-entry-sub{font-size:12px;color:#475569;font-style:italic;}
+.tpl-classic .r-entry-desc{font-size:12px;color:#475569;line-height:1.7;margin-top:3px;font-family:'DM Sans',sans-serif;}
+.tpl-classic .r-skills-list{font-size:13px;color:#1e293b;line-height:1.8;}
+.tpl-classic .r-skill-tag{font-family:'DM Sans',sans-serif;font-size:12px;}
+
+/* ══════════════════════════════════════════
+   TEMPLATE 3 — MINIMAL
+══════════════════════════════════════════ */
+.tpl-minimal{font-family:'DM Sans',sans-serif;padding:56px 64px;}
+.tpl-minimal .r-name{font-size:36px;font-weight:300;letter-spacing:-.03em;color:#0f172a;margin-bottom:4px;}
+.tpl-minimal .r-role{font-size:14px;color:#94a3b8;font-weight:400;margin-bottom:16px;}
+.tpl-minimal .r-contacts{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:#64748b;margin-bottom:32px;}
+.tpl-minimal .r-divider{height:1px;background:#f1f5f9;margin:20px 0;}
+.tpl-minimal .r-sec-title{
+  font-size:10px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:#94a3b8;margin-bottom:12px;
+}
+.tpl-minimal .r-entry{margin-bottom:14px;display:grid;grid-template-columns:120px 1fr;gap:12px;}
+.tpl-minimal .r-entry-meta{text-align:right;}
+.tpl-minimal .r-entry-date{font-size:11px;color:#94a3b8;}
+.tpl-minimal .r-entry-title{font-size:13px;font-weight:600;color:#1e293b;}
+.tpl-minimal .r-entry-sub{font-size:12px;color:#64748b;}
+.tpl-minimal .r-entry-desc{font-size:12px;color:#64748b;line-height:1.7;margin-top:4px;}
+.tpl-minimal .r-skill-tag{
+  font-size:11px;color:#64748b;border:1px solid #e2e8f0;
+  padding:3px 10px;border-radius:4px;display:inline-block;margin:2px;
+}
+.tpl-minimal .r-photo{width:70px;height:70px;border-radius:4px;object-fit:cover;float:right;margin-left:16px;}
+
+/* ══════════════════════════════════════════
+   TEMPLATE 4 — TECH/DEVELOPER
+══════════════════════════════════════════ */
+.tpl-tech{font-family:'JetBrains Mono',monospace;background:#0f172a;color:#e2e8f0;}
+.tpl-tech .r-header{
+  padding:28px 32px;border-bottom:1px solid #1e293b;
+  display:flex;align-items:center;gap:20px;
+}
+.tpl-tech .r-photo{width:80px;height:80px;border-radius:8px;object-fit:cover;border:2px solid #22d3ee;flex-shrink:0;}
+.tpl-tech .r-photo-placeholder{width:80px;height:80px;border-radius:8px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;border:2px solid #22d3ee;}
+.tpl-tech .r-name{font-size:22px;font-weight:600;color:#22d3ee;margin-bottom:4px;}
+.tpl-tech .r-name::before{content:'> ';color:#64748b;}
+.tpl-tech .r-role{font-size:12px;color:#64748b;margin-bottom:8px;}
+.tpl-tech .r-contacts{font-size:11px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;}
+.tpl-tech .r-contacts span::before{content:'// ';}
+.tpl-tech .r-body{display:grid;grid-template-columns:230px 1fr;min-height:950px;}
+.tpl-tech .r-sidebar{background:#0a0f1a;padding:24px 20px;border-right:1px solid #1e293b;}
+.tpl-tech .r-main{padding:24px 28px;}
+.tpl-tech .r-sec-title{
+  font-size:10px;font-weight:600;letter-spacing:.15em;
+  color:#22d3ee;margin-bottom:10px;
+  text-transform:uppercase;
+}
+.tpl-tech .r-sec-title::before{content:'## ';}
+.tpl-tech .r-sec{margin-bottom:22px;}
+.tpl-tech .r-skill-tag{
+  display:inline-block;padding:2px 8px;border-radius:4px;
+  background:#1e293b;color:#22d3ee;font-size:10px;
+  margin:2px;border:1px solid #334155;
+}
+.tpl-tech .r-entry{margin-bottom:16px;border-left:2px solid #22d3ee;padding-left:12px;}
+.tpl-tech .r-entry-title{font-size:13px;font-weight:600;color:#f8fafc;}
+.tpl-tech .r-entry-sub{font-size:11px;color:#22d3ee;}
+.tpl-tech .r-entry-date{font-size:10px;color:#475569;}
+.tpl-tech .r-entry-desc{font-size:11px;color:#94a3b8;line-height:1.7;margin-top:4px;}
+
+/* ══════════════════════════════════════════
+   TEMPLATE 5 — FRESHER
+══════════════════════════════════════════ */
+.tpl-fresher{font-family:'DM Sans',sans-serif;}
+.tpl-fresher .r-header{
+  background:linear-gradient(135deg,#059669,#0284c7);
+  padding:28px 36px;color:white;text-align:center;
+}
+.tpl-fresher .r-photo{width:85px;height:85px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.6);margin:0 auto 10px;display:block;}
+.tpl-fresher .r-photo-placeholder{width:85px;height:85px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 10px;border:3px solid rgba(255,255,255,.3);}
+.tpl-fresher .r-name{font-size:26px;font-weight:700;margin-bottom:4px;}
+.tpl-fresher .r-role{font-size:13px;opacity:.85;margin-bottom:10px;}
+.tpl-fresher .r-contacts{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;font-size:12px;opacity:.9;}
+.tpl-fresher .r-body{padding:24px 32px;}
+.tpl-fresher .r-sec-title{
+  font-size:12px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:#059669;
+  margin:16px 0 10px;padding-bottom:6px;
+  border-bottom:2px solid #d1fae5;
+  display:flex;align-items:center;gap:6px;
+}
+.tpl-fresher .r-entry{margin-bottom:12px;}
+.tpl-fresher .r-entry-row{display:flex;justify-content:space-between;align-items:baseline;}
+.tpl-fresher .r-entry-title{font-size:14px;font-weight:700;color:#1e293b;}
+.tpl-fresher .r-entry-sub{font-size:12px;color:#0284c7;font-weight:600;}
+.tpl-fresher .r-entry-date{font-size:11px;color:#94a3b8;background:#f0fdf4;padding:2px 8px;border-radius:20px;}
+.tpl-fresher .r-entry-desc{font-size:12px;color:#475569;line-height:1.7;margin-top:4px;}
+.tpl-fresher .r-skill-tag{
+  display:inline-block;padding:4px 12px;border-radius:20px;
+  background:#d1fae5;color:#059669;font-size:12px;
+  font-weight:600;margin:3px;border:1.5px solid #a7f3d0;
+}
+
+/* ══════════════════════════════════════════
+   TEMPLATE 6 — CREATIVE
+══════════════════════════════════════════ */
+.tpl-creative{font-family:'DM Sans',sans-serif;display:grid;grid-template-columns:260px 1fr;min-height:1123px;}
+.tpl-creative .r-sidebar{
+  background:linear-gradient(180deg,#7c3aed,#db2777);
+  padding:32px 22px;color:white;
+}
+.tpl-creative .r-photo{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:4px solid rgba(255,255,255,.4);}
+.tpl-creative .r-photo-placeholder{width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 14px;border:4px solid rgba(255,255,255,.3);}
+.tpl-creative .r-name{font-size:20px;font-weight:700;text-align:center;margin-bottom:4px;line-height:1.2;}
+.tpl-creative .r-role{font-size:12px;text-align:center;opacity:.8;margin-bottom:20px;}
+.tpl-creative .r-sec-title{
+  font-size:10px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;opacity:.7;
+  margin:18px 0 8px;padding-bottom:6px;
+  border-bottom:1px solid rgba(255,255,255,.3);
+}
+.tpl-creative .r-contact-item{font-size:11px;margin-bottom:6px;display:flex;align-items:flex-start;gap:6px;opacity:.9;word-break:break-all;}
+.tpl-creative .r-skill-tag{
+  display:block;padding:5px 10px;border-radius:6px;
+  background:rgba(255,255,255,.15);color:white;
+  font-size:11px;font-weight:600;margin-bottom:5px;
+}
+.tpl-creative .r-main{padding:32px 28px;}
+.tpl-creative .r-main-title{
+  font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:#7c3aed;
+  margin:18px 0 10px;padding-bottom:6px;
+  border-bottom:2px solid #f3e8ff;
+}
+.tpl-creative .r-entry{margin-bottom:14px;}
+.tpl-creative .r-entry-title{font-size:14px;font-weight:700;color:#1e293b;}
+.tpl-creative .r-entry-sub{font-size:12px;color:#db2777;font-weight:600;}
+.tpl-creative .r-entry-date{font-size:11px;color:#94a3b8;}
+.tpl-creative .r-entry-desc{font-size:12px;color:#475569;line-height:1.7;margin-top:4px;}
+
+/* ACCENT COLOR OVERRIDES */
+.accent-blue .r-sec-title{color:#1d4ed8!important;}
+.accent-blue .r-entry-sub{color:#2563eb!important;}
+.accent-green .r-sec-title{color:#059669!important;}
+.accent-green .r-entry-sub{color:#10b981!important;}
+.accent-red .r-sec-title{color:#dc2626!important;}
+.accent-red .r-entry-sub{color:#ef4444!important;}
+.accent-orange .r-sec-title{color:#d97706!important;}
+.accent-orange .r-entry-sub{color:#f59e0b!important;}
+.accent-purple .r-sec-title{color:#7c3aed!important;}
+.accent-purple .r-entry-sub{color:#8b5cf6!important;}
+.accent-teal .r-sec-title{color:#0d9488!important;}
+.accent-teal .r-entry-sub{color:#14b8a6!important;}
+
+/* PRINT */
+@media print{
+  .form-panel,.preview-toolbar{display:none!important;}
+  .app{grid-template-columns:1fr;}
+  .preview-panel{padding:0;background:white;}
+  #resumeSheet{box-shadow:none;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ══════════ LEFT: FORM ══════════ -->
+<div class="form-panel">
+
+  <div class="brand">
+    <div class="brand-icon">📄</div>
+    <div>
+      <h1>Resume Creator</h1>
+      <span>Professional CV Builder</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('personal')">👤 Personal</button>
+    <button class="tab-btn" onclick="showTab('objective')">🎯 Objective</button>
+    <button class="tab-btn" onclick="showTab('education')">🎓 Education</button>
+    <button class="tab-btn" onclick="showTab('skills')">🛠 Skills</button>
+    <button class="tab-btn" onclick="showTab('projects')">💻 Projects</button>
+    <button class="tab-btn" onclick="showTab('optional')">➕ Optional</button>
+    <button class="tab-btn" onclick="showTab('design')">🎨 Design</button>
+  </div>
+
+  <!-- ── TAB: PERSONAL ── -->
+  <div class="tab-content active" id="tab-personal">
+    <div class="section-head">
+      <h3><span class="icon">👤</span> Personal Details</h3>
+    </div>
+    <div class="form-group">
+      <label>📷 Profile Photo</label>
+      <div class="photo-upload-area" onclick="document.getElementById('photoFile').click()">
+        <input type="file" id="photoFile" accept="image/*" onchange="handlePhoto(this)">
+        <img id="photoPreview" src="" alt="photo">
+        <div id="photoPlaceholder">
+          <div style="font-size:32px;margin-bottom:6px;">📷</div>
+          <div style="font-size:12px;color:var(--muted);">Click to upload photo</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group"><label>Full Name *</label><input type="text" id="fullName" placeholder="e.g. Ravi Kumar" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Job Title / Role</label><input type="text" id="jobTitle" placeholder="e.g. Software Developer" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>📧 Email ID *</label><input type="email" id="email" placeholder="yourname@email.com" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>📞 Phone Number</label><input type="tel" id="phone"></div>
+    <div class="form-group"><label>📍 Address (Optional)</label><input type="text" id="address" placeholder="City, State" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>🔗 LinkedIn (Optional)</label><input type="text" id="linkedin" placeholder="linkedin.com/in/yourname" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>🐙 GitHub (Optional)</label><input type="text" id="github" placeholder="github.com/yourname" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>🌐 Portfolio (Optional)</label><input type="text" id="portfolio" placeholder="yourportfolio.com" oninput="liveUpdate()"></div>
+  </div>
+
+  <!-- ── TAB: OBJECTIVE ── -->
+  <div class="tab-content" id="tab-objective">
+    <div class="section-head">
+      <h3><span class="icon">🎯</span> Career Objective</h3>
+    </div>
+    <div class="form-group">
+      <label>Career Objective / Summary</label>
+      <textarea id="objective" rows="5" placeholder="e.g. I am a motivated Computer Science student seeking an entry-level software developer role to apply my skills in web development and programming..." oninput="liveUpdate()"></textarea>
+    </div>
+  </div>
+
+  <!-- ── TAB: EDUCATION ── -->
+  <div class="tab-content" id="tab-education">
+    <div class="section-head">
+      <h3><span class="icon">🎓</span> Education</h3>
+    </div>
+    <div id="educationList"></div>
+    <button class="add-btn" onclick="addEducation()">+ Add Education</button>
+  </div>
+
+  <!-- ── TAB: SKILLS ── -->
+  <div class="tab-content" id="tab-skills">
+    <div class="section-head">
+      <h3><span class="icon">🛠</span> Skills</h3>
+    </div>
+    <div class="form-group">
+      <label>💻 Technical Skills</label>
+      <div class="skill-input-row">
+        <input type="text" id="techSkillInput" placeholder="e.g. JavaScript" onkeydown="if(event.key==='Enter')addSkill('tech')">
+        <button onclick="addSkill('tech')">+</button>
+      </div>
+      <div class="skill-tags" id="techSkills"></div>
+    </div>
+    <div class="form-group">
+      <label>🤝 Soft Skills</label>
+      <div class="skill-input-row">
+        <input type="text" id="softSkillInput" placeholder="e.g. Communication" onkeydown="if(event.key==='Enter')addSkill('soft')">
+        <button onclick="addSkill('soft')">+</button>
+      </div>
+      <div class="skill-tags" id="softSkills"></div>
+    </div>
+    <div class="form-group">
+      <label>🔧 Tools & Platforms</label>
+      <div class="skill-input-row">
+        <input type="text" id="toolSkillInput" placeholder="e.g. Git, VS Code" onkeydown="if(event.key==='Enter')addSkill('tool')">
+        <button onclick="addSkill('tool')">+</button>
+      </div>
+      <div class="skill-tags" id="toolSkills"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: PROJECTS ── -->
+  <div class="tab-content" id="tab-projects">
+    <div class="section-head">
+      <h3><span class="icon">💻</span> Projects</h3>
+    </div>
+    <div id="projectList"></div>
+    <button class="add-btn" onclick="addProject()">+ Add Project</button>
+  </div>
+
+  <!-- ── TAB: OPTIONAL ── -->
+  <div class="tab-content" id="tab-optional">
+
+    <!-- Internships -->
+    <div class="section-head" style="margin-top:0">
+      <h3><span class="icon">🧑‍💼</span> Internships</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-internship" onclick="toggleSection('internship')"></div>
+      </div>
+    </div>
+    <div id="sec-internship" style="display:none">
+      <div id="internshipList"></div>
+      <button class="add-btn" onclick="addInternship()">+ Add Internship</button>
+    </div>
+
+    <!-- Certifications -->
+    <div class="section-head">
+      <h3><span class="icon">🏆</span> Certifications</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-cert" onclick="toggleSection('cert')"></div>
+      </div>
+    </div>
+    <div id="sec-cert" style="display:none">
+      <div id="certList"></div>
+      <button class="add-btn" onclick="addCert()">+ Add Certification</button>
+    </div>
+
+    <!-- Achievements -->
+    <div class="section-head">
+      <h3><span class="icon">🥇</span> Achievements</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-achieve" onclick="toggleSection('achieve')"></div>
+      </div>
+    </div>
+    <div id="sec-achieve" style="display:none">
+      <div id="achieveList"></div>
+      <button class="add-btn" onclick="addAchieve()">+ Add Achievement</button>
+    </div>
+
+    <!-- Languages -->
+    <div class="section-head">
+      <h3><span class="icon">🌐</span> Languages</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-lang" onclick="toggleSection('lang')"></div>
+      </div>
+    </div>
+    <div id="sec-lang" style="display:none">
+      <div id="langList"></div>
+      <button class="add-btn" onclick="addLang()">+ Add Language</button>
+    </div>
+
+    <!-- Hobbies -->
+    <div class="section-head">
+      <h3><span class="icon">🎨</span> Hobbies</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-hobby" onclick="toggleSection('hobby')"></div>
+      </div>
+    </div>
+    <div id="sec-hobby" style="display:none">
+      <div class="form-group">
+        <textarea id="hobbies" rows="3" placeholder="e.g. Coding, Reading books, Gaming, Designing apps" oninput="liveUpdate()"></textarea>
+      </div>
+    </div>
+
+    <!-- Volunteer -->
+    <div class="section-head">
+      <h3><span class="icon">🤲</span> Volunteer Work</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-volunteer" onclick="toggleSection('volunteer')"></div>
+      </div>
+    </div>
+    <div id="sec-volunteer" style="display:none">
+      <div id="volunteerList"></div>
+      <button class="add-btn" onclick="addVolunteer()">+ Add Volunteer Work</button>
+    </div>
+
+    <!-- Publications -->
+    <div class="section-head">
+      <h3><span class="icon">📚</span> Publications</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-pub" onclick="toggleSection('pub')"></div>
+      </div>
+    </div>
+    <div id="sec-pub" style="display:none">
+      <div id="pubList"></div>
+      <button class="add-btn" onclick="addPub()">+ Add Publication</button>
+    </div>
+
+    <!-- References -->
+    <div class="section-head">
+      <h3><span class="icon">👥</span> References</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-ref" onclick="toggleSection('ref')"></div>
+      </div>
+    </div>
+    <div id="sec-ref" style="display:none">
+      <div class="form-group">
+        <label style="font-size:12px;color:var(--muted)">Reference Type</label>
+        <select id="refType" onchange="liveUpdate()">
+          <option value="available">Available on Request</option>
+          <option value="custom">Add Custom References</option>
+        </select>
+      </div>
+      <div id="refList"></div>
+      <button class="add-btn" id="addRefBtn" onclick="addRef()" style="display:none">+ Add Reference</button>
+    </div>
+
+    <!-- Declaration -->
+    <div class="section-head">
+      <h3><span class="icon">📝</span> Declaration</h3>
+      <div class="toggle-wrap">
+        <div class="toggle" id="tog-decl" onclick="toggleSection('decl')"></div>
+      </div>
+    </div>
+    <div id="sec-decl" style="display:none">
+      <div class="form-group">
+        <textarea id="declaration" rows="3" oninput="liveUpdate()">I hereby declare that the above information is true and correct to the best of my knowledge and belief.</textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB: DESIGN ── -->
+  <div class="tab-content" id="tab-design">
+    <div class="section-head">
+      <h3><span class="icon">🎨</span> Templates</h3>
+    </div>
+    <div class="template-grid">
+      <div class="tpl-card active" onclick="setTemplate('modern')">
+        <div class="tpl-icon">🔵</div>
+        <div class="tpl-name">Modern</div>
+        <div class="tpl-desc">Two column, colorful</div>
+      </div>
+      <div class="tpl-card" onclick="setTemplate('classic')">
+        <div class="tpl-icon">📰</div>
+        <div class="tpl-name">Classic</div>
+        <div class="tpl-desc">Single col, ATS safe</div>
+      </div>
+      <div class="tpl-card" onclick="setTemplate('minimal')">
+        <div class="tpl-icon">⬜</div>
+        <div class="tpl-name">Minimal</div>
+        <div class="tpl-desc">Clean, white space</div>
+      </div>
+      <div class="tpl-card" onclick="setTemplate('tech')">
+        <div class="tpl-icon">💻</div>
+        <div class="tpl-name">Tech/Dev</div>
+        <div class="tpl-desc">Dark, code style</div>
+      </div>
+      <div class="tpl-card" onclick="setTemplate('fresher')">
+        <div class="tpl-icon">🌱</div>
+        <div class="tpl-name">Fresher</div>
+        <div class="tpl-desc">Entry level focus</div>
+      </div>
+      <div class="tpl-card" onclick="setTemplate('creative')">
+        <div class="tpl-icon">🎨</div>
+        <div class="tpl-name">Creative</div>
+        <div class="tpl-desc">Bold sidebar layout</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h3><span class="icon">🎨</span> Accent Color</h3>
+    </div>
+    <div class="color-row">
+      <div class="swatch active" style="background:#2563eb" onclick="setAccent('blue',this)" title="Blue"></div>
+      <div class="swatch" style="background:#7c3aed" onclick="setAccent('purple',this)" title="Purple"></div>
+      <div class="swatch" style="background:#059669" onclick="setAccent('green',this)" title="Green"></div>
+      <div class="swatch" style="background:#dc2626" onclick="setAccent('red',this)" title="Red"></div>
+      <div class="swatch" style="background:#d97706" onclick="setAccent('orange',this)" title="Orange"></div>
+      <div class="swatch" style="background:#0d9488" onclick="setAccent('teal',this)" title="Teal"></div>
+    </div>
+  </div>
+
+  <button class="gen-btn" onclick="generateResume()">🚀 Generate & Preview</button>
+
+</div>
+<!-- END FORM PANEL -->
+
+<!-- ══════════ RIGHT: PREVIEW ══════════ -->
+<div class="preview-panel">
+  <div class="preview-toolbar">
+    <button class="tool-btn pdf" onclick="downloadPDF()">📄 Download PDF</button>
+    <button class="tool-btn png" onclick="downloadPNG()">🖼 Download PNG</button>
+    <button class="tool-btn print" onclick="window.print()">🖨 Print</button>
+  </div>
+  <div id="resumeSheet"></div>
+</div>
+
+</div><!-- END APP -->
+
+<!-- LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let currentTemplate = 'modern';
+let currentAccent = 'blue';
+let photoDataUrl = '';
+const skills = { tech:[], soft:[], tool:[] };
+const sections = { internship:false, cert:false, achieve:false, lang:false, hobby:false, volunteer:false, pub:false, ref:false, decl:false };
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   PHONE
+══════════════════════════════════════ */
+const phoneInput = window.intlTelInput(document.querySelector('#phone'),{
+  initialCountry:'in', separateDialCode:true,
+  utilsScript:'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js'
+});
+
+/* ══════════════════════════════════════
+   PHOTO
+══════════════════════════════════════ */
+function handlePhoto(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoDataUrl = e.target.result;
+    const prev = document.getElementById('photoPreview');
+    prev.src = photoDataUrl;
+    prev.style.display = 'block';
+    document.getElementById('photoPlaceholder').style.display = 'none';
+    liveUpdate();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ══════════════════════════════════════
+   SKILLS
+══════════════════════════════════════ */
+function addSkill(type){
+  const inp = document.getElementById(type+'SkillInput');
+  const val = inp.value.trim();
+  if(!val) return;
+  skills[type].push(val);
+  inp.value = '';
+  renderSkills(type);
+  liveUpdate();
+}
+function removeSkill(type, idx){
+  skills[type].splice(idx,1);
+  renderSkills(type);
+  liveUpdate();
+}
+function renderSkills(type){
+  const container = document.getElementById(type+'Skills');
+  container.innerHTML = skills[type].map((s,i)=>`
+    <div class="skill-tag">${s}<button onclick="removeSkill('${type}',${i})">×</button></div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════
+   DYNAMIC ENTRIES
+══════════════════════════════════════ */
+let eduCount=0, projCount=0, internCount=0, certCount=0, achieveCount=0, langCount=0, volunteerCount=0, pubCount=0, refCount=0;
+
+function addEducation(){
+  const id = ++eduCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'edu-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('edu-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Degree / Course</label><input type="text" placeholder="B.Tech / B.Sc / Diploma" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>College / University</label><input type="text" placeholder="College name" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Year</label><input type="text" placeholder="2021–2025" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>CGPA / Percentage</label><input type="text" placeholder="8.5 / 85%" oninput="liveUpdate()"></div>`;
+  document.getElementById('educationList').appendChild(div);
+}
+
+function addProject(){
+  const id = ++projCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'proj-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('proj-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Project Name</label><input type="text" placeholder="e.g. Snake Game" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Short description of what you built..." oninput="liveUpdate()"></textarea></div>
+    <div class="form-group"><label>Technologies Used</label><input type="text" placeholder="HTML, CSS, JavaScript" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>GitHub Link</label><input type="text" placeholder="github.com/yourname/project" oninput="liveUpdate()"></div>`;
+  document.getElementById('projectList').appendChild(div);
+}
+
+function addInternship(){
+  const id = ++internCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'intern-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('intern-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Company Name</label><input type="text" placeholder="Company name" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Role</label><input type="text" placeholder="e.g. Web Developer Intern" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Duration</label><input type="text" placeholder="e.g. June 2024 – Aug 2024" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Work Done</label><textarea rows="2" placeholder="Key tasks and responsibilities..." oninput="liveUpdate()"></textarea></div>`;
+  document.getElementById('internshipList').appendChild(div);
+}
+
+function addCert(){
+  const id = ++certCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'cert-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('cert-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Certificate Name</label><input type="text" placeholder="e.g. Python for Everybody" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Issuer</label><input type="text" placeholder="e.g. Coursera / Udemy" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Year</label><input type="text" placeholder="e.g. 2024" oninput="liveUpdate()"></div>`;
+  document.getElementById('certList').appendChild(div);
+}
+
+function addAchieve(){
+  const id = ++achieveCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'achieve-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('achieve-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Achievement</label><input type="text" placeholder="e.g. Won 1st place in Hackathon" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Description (optional)</label><input type="text" placeholder="More details..." oninput="liveUpdate()"></div>`;
+  document.getElementById('achieveList').appendChild(div);
+}
+
+function addLang(){
+  const id = ++langCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'lang-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('lang-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Language</label><input type="text" placeholder="e.g. Telugu" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Proficiency</label>
+    <select oninput="liveUpdate()">
+      <option>Native</option><option>Fluent</option><option>Intermediate</option><option>Basic</option>
+    </select></div>`;
+  document.getElementById('langList').appendChild(div);
+}
+
+function addVolunteer(){
+  const id = ++volunteerCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'volunteer-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('volunteer-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Organization</label><input type="text" placeholder="Organization name" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Role</label><input type="text" placeholder="Your role" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Duration</label><input type="text" placeholder="Year / Duration" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Description</label><textarea rows="2" placeholder="What you did..." oninput="liveUpdate()"></textarea></div>`;
+  document.getElementById('volunteerList').appendChild(div);
+}
+
+function addPub(){
+  const id = ++pubCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'pub-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('pub-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Title</label><input type="text" placeholder="Research paper / article title" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Published In</label><input type="text" placeholder="Journal / Conference / Blog" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Year</label><input type="text" placeholder="e.g. 2024" oninput="liveUpdate()"></div>`;
+  document.getElementById('pubList').appendChild(div);
+}
+
+function addRef(){
+  const id = ++refCount;
+  const div = document.createElement('div');
+  div.className = 'entry-card'; div.id = 'ref-'+id;
+  div.innerHTML = `
+    <button class="remove-btn" onclick="removeEntry('ref-${id}')">✕ Remove</button>
+    <div style="clear:both"></div>
+    <div class="form-group"><label>Name</label><input type="text" placeholder="Reference name" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Position</label><input type="text" placeholder="Job title" oninput="liveUpdate()"></div>
+    <div class="form-group"><label>Contact</label><input type="text" placeholder="Email / Phone" oninput="liveUpdate()"></div>`;
+  document.getElementById('refList').appendChild(div);
+}
+
+document.getElementById('refType').addEventListener('change', function(){
+  document.getElementById('addRefBtn').style.display = this.value==='custom' ? 'block' : 'none';
+  liveUpdate();
+});
+
+function removeEntry(id){ const el = document.getElementById(id); if(el) el.remove(); liveUpdate(); }
+
+/* ══════════════════════════════════════
+   TOGGLE OPTIONAL SECTIONS
+══════════════════════════════════════ */
+function toggleSection(key){
+  sections[key] = !sections[key];
+  const tog = document.getElementById('tog-'+key);
+  const sec = document.getElementById('sec-'+key);
+  tog.classList.toggle('on', sections[key]);
+  sec.style.display = sections[key] ? 'block' : 'none';
+  liveUpdate();
+}
+
+/* ══════════════════════════════════════
+   TEMPLATE & ACCENT
+══════════════════════════════════════ */
+function setTemplate(t){
+  currentTemplate = t;
+  document.querySelectorAll('.tpl-card').forEach(c=>c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  liveUpdate();
+}
+function setAccent(color, el){
+  currentAccent = color;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  liveUpdate();
+}
+
+/* ══════════════════════════════════════
+   DATA COLLECTION
+══════════════════════════════════════ */
+function getData(){
+  const g = id => (document.getElementById(id)||{}).value || '';
+  const entries = (listId, fields) => {
+    const cards = document.getElementById(listId)?.querySelectorAll('.entry-card') || [];
+    return Array.from(cards).map(card=>{
+      const inputs = card.querySelectorAll('input,textarea,select');
+      const obj = {};
+      fields.forEach((f,i)=>{ obj[f] = inputs[i]?.value||''; });
+      return obj;
+    });
+  };
+
+  return {
+    name: g('fullName'), title: g('jobTitle'),
+    email: g('email'), phone: phoneInput.getNumber(),
+    address: g('address'), linkedin: g('linkedin'),
+    github: g('github'), portfolio: g('portfolio'),
+    objective: g('objective'),
+    education: entries('educationList',['degree','college','year','cgpa']),
+    skills, projects: entries('projectList',['name','desc','tech','link']),
+    internships: sections.internship ? entries('internshipList',['company','role','duration','work']) : [],
+    certs: sections.cert ? entries('certList',['name','issuer','year']) : [],
+    achievements: sections.achieve ? entries('achieveList',['title','desc']) : [],
+    languages: sections.lang ? entries('langList',['lang','level']) : [],
+    hobbies: sections.hobby ? g('hobbies') : '',
+    volunteers: sections.volunteer ? entries('volunteerList',['org','role','duration','desc']) : [],
+    publications: sections.pub ? entries('pubList',['title','pub','year']) : [],
+    refType: sections.ref ? g('refType') : '',
+    refs: sections.ref ? entries('refList',['name','pos','contact']) : [],
+    declaration: sections.decl ? g('declaration') : '',
+    photo: photoDataUrl,
+  };
+}
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const photoEl = (cls='r-photo') => photoDataUrl
+  ? `<img src="${photoDataUrl}" class="${cls}">`
+  : `<div class="${cls}-placeholder">👤</div>`;
+
+const allSkills = d => [...d.skills.tech,...d.skills.soft,...d.skills.tool];
+
+function skillTags(arr, cls='r-skill-tag'){
+  return arr.map(s=>`<span class="${cls}">${esc(s)}</span>`).join('');
+}
+
+/* ══════════════════════════════════════
+   TEMPLATE RENDERERS
+══════════════════════════════════════ */
+
+/* ── MODERN ── */
+function renderModern(d){
+  const sidebar = `
+    ${photoEl()}
+    ${d.skills.tech.length?`<div class="r-sec"><div class="r-sec-title">Technical Skills</div>${skillTags(d.skills.tech)}</div>`:''}
+    ${d.skills.tool.length?`<div class="r-sec"><div class="r-sec-title">Tools</div>${skillTags(d.skills.tool)}</div>`:''}
+    ${d.skills.soft.length?`<div class="r-sec"><div class="r-sec-title">Soft Skills</div>${skillTags(d.skills.soft)}</div>`:''}
+    ${d.languages.length?`<div class="r-sec"><div class="r-sec-title">Languages</div>${d.languages.map(l=>`
+      <div class="r-lang-item"><span>${esc(l.lang)}</span><span style="font-size:10px;color:#94a3b8">${esc(l.level)}</span></div>`).join('')}</div>`:''}
+    ${d.hobbies?`<div class="r-sec"><div class="r-sec-title">Hobbies</div><div style="font-size:12px;color:#475569">${esc(d.hobbies)}</div></div>`:''}
+  `;
+  const main = `
+    ${d.objective?`<div class="r-sec"><div class="r-sec-title">Career Objective</div><div style="font-size:13px;color:#475569;line-height:1.7">${esc(d.objective)}</div></div>`:''}
+    ${d.education.length?`<div class="r-sec"><div class="r-sec-title">Education</div>${d.education.map(e=>`
+      <div class="r-entry">
+        <div class="r-entry-title">${esc(e.degree)}</div>
+        <div class="r-entry-sub">${esc(e.college)}</div>
+        <div class="r-entry-date">${esc(e.year)}${e.cgpa?' · '+esc(e.cgpa):''}</div>
+      </div>`).join('')}</div>`:''}
+    ${d.projects.length?`<div class="r-sec"><div class="r-sec-title">Projects</div>${d.projects.map(p=>`
+      <div class="r-entry">
+        <div class="r-entry-title">${esc(p.name)}</div>
+        <div class="r-entry-sub">${esc(p.tech)}</div>
+        <div class="r-entry-desc">${esc(p.desc)}${p.link?` <span style="color:#2563eb">${esc(p.link)}</span>`:''}</div>
+      </div>`).join('')}</div>`:''}
+    ${d.internships.length?`<div class="r-sec"><div class="r-sec-title">Internships</div>${d.internships.map(i=>`
+      <div class="r-entry">
+        <div class="r-entry-title">${esc(i.role)}</div>
+        <div class="r-entry-sub">${esc(i.company)}</div>
+        <div class="r-entry-date">${esc(i.duration)}</div>
+        <div class="r-entry-desc">${esc(i.work)}</div>
+      </div>`).join('')}</div>`:''}
+    ${d.certs.length?`<div class="r-sec"><div class="r-sec-title">Certifications</div>${d.certs.map(c=>`
+      <div class="r-entry"><div class="r-entry-title">${esc(c.name)}</div><div class="r-entry-sub">${esc(c.issuer)}</div><div class="r-entry-date">${esc(c.year)}</div></div>`).join('')}</div>`:''}
+    ${d.achievements.length?`<div class="r-sec"><div class="r-sec-title">Achievements</div>${d.achievements.map(a=>`
+      <div class="r-entry"><div class="r-entry-title">${esc(a.title)}</div><div class="r-entry-desc">${esc(a.desc)}</div></div>`).join('')}</div>`:''}
+    ${d.volunteers.length?`<div class="r-sec"><div class="r-sec-title">Volunteer Work</div>${d.volunteers.map(v=>`
+      <div class="r-entry"><div class="r-entry-title">${esc(v.role)}</div><div class="r-entry-sub">${esc(v.org)}</div><div class="r-entry-date">${esc(v.duration)}</div><div class="r-entry-desc">${esc(v.desc)}</div></div>`).join('')}</div>`:''}
+    ${d.publications.length?`<div class="r-sec"><div class="r-sec-title">Publications</div>${d.publications.map(p=>`
+      <div class="r-entry"><div class="r-entry-title">${esc(p.title)}</div><div class="r-entry-sub">${esc(p.pub)}</div><div class="r-entry-date">${esc(p.year)}</div></div>`).join('')}</div>`:''}
+    ${d.refType?`<div class="r-sec"><div class="r-sec-title">References</div>${d.refType==='available'?'<div style="font-size:12px;color:#475569">Available on request</div>':d.refs.map(r=>`<div class="r-entry"><div class="r-entry-title">${esc(r.name)}</div><div class="r-entry-sub">${esc(r.pos)}</div><div class="r-entry-date">${esc(r.contact)}</div></div>`).join('')}</div>`:''}
+    ${d.declaration?`<div class="r-sec" style="margin-top:auto"><div class="r-sec-title">Declaration</div><div style="font-size:12px;color:#475569;font-style:italic">${esc(d.declaration)}</div></div>`:''}
+  `;
+  return `
+  <div class="tpl-modern accent-${currentAccent}">
+    <div class="r-header">
+      ${photoEl('r-photo')}
+      <div>
+        <div class="r-name">${esc(d.name)||'Your Name'}</div>
+        <div class="r-role">${esc(d.title)||'Your Title'}</div>
+        <div class="r-contacts">
+          ${d.email?`<span>✉ ${esc(d.email)}</span>`:''}
+          ${d.phone?`<span>📞 ${esc(d.phone)}</span>`:''}
+          ${d.address?`<span>📍 ${esc(d.address)}</span>`:''}
+          ${d.linkedin?`<span>🔗 ${esc(d.linkedin)}</span>`:''}
+          ${d.github?`<span>🐙 ${esc(d.github)}</span>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="r-body">
+      <div class="r-sidebar">${sidebar}</div>
+      <div class="r-main">${main}</div>
+    </div>
+  </div>`;
+}
+
+/* ── CLASSIC ── */
+function renderClassic(d){
+  return `
+  <div class="tpl-classic accent-${currentAccent}">
+    <div class="r-header">
+      ${d.photo?`<img src="${d.photo}" class="r-photo">`:''}
+      <div class="r-name">${esc(d.name)||'Your Name'}</div>
+      ${d.title?`<div style="font-size:14px;color:#475569;margin-top:4px;font-family:'DM Sans'">${esc(d.title)}</div>`:''}
+      <div class="r-contacts">
+        ${[d.email,d.phone,d.address,d.linkedin,d.github].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('')}
+      </div>
+    </div>
+    ${d.objective?`<div class="r-sec-title">Career Objective</div><div style="font-size:13px;color:#475569;line-height:1.7;font-family:'DM Sans';margin-bottom:10px">${esc(d.objective)}</div>`:''}
+    ${d.education.length?`<div class="r-sec-title">Education</div>${d.education.map(e=>`
+      <div class="r-entry">
+        <div class="r-entry-row"><span class="r-entry-title">${esc(e.degree)}</span><span class="r-entry-date">${esc(e.year)}</span></div>
+        <div class="r-entry-sub">${esc(e.college)}${e.cgpa?' — '+esc(e.cgpa):''}</div>
+      </div>`).join('')}`:''}
+    ${allSkills(d).length?`<div class="r-sec-title">Skills</div><div class="r-skills-list">${allSkills(d).map(s=>`<span class="r-skill-tag">${esc(s)}</span>`).join(' · ')}</div>`:''}
+    ${d.projects.length?`<div class="r-sec-title">Projects</div>${d.projects.map(p=>`
+      <div class="r-entry">
+        <div class="r-entry-row"><span class="r-entry-title">${esc(p.name)}</span><span class="r-entry-date">${esc(p.tech)}</span></div>
+        <div class="r-entry-desc">${esc(p.desc)}${p.link?' | '+esc(p.link):''}</div>
+      </div>`).join('')}`:''}
+    ${d.internships.length?`<div class="r-sec-title">Internships</div>${d.internships.map(i=>`
+      <div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(i.role)} — ${esc(i.company)}</span><span class="r-entry-date">${esc(i.duration)}</span></div><div class="r-entry-desc">${esc(i.work)}</div></div>`).join('')}`:''}
+    ${d.certs.length?`<div class="r-sec-title">Certifications</div>${d.certs.map(c=>`
+      <div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(c.name)}</span><span class="r-entry-date">${esc(c.year)}</span></div><div class="r-entry-sub">${esc(c.issuer)}</div></div>`).join('')}`:''}
+    ${d.achievements.length?`<div class="r-sec-title">Achievements</div>${d.achievements.map(a=>`<div class="r-entry"><div class="r-entry-title">${esc(a.title)}</div><div class="r-entry-desc">${esc(a.desc)}</div></div>`).join('')}`:''}
+    ${d.languages.length?`<div class="r-sec-title">Languages</div><div style="font-family:'DM Sans';font-size:13px">${d.languages.map(l=>`${esc(l.lang)} (${esc(l.level)})`).join(' · ')}</div>`:''}
+    ${d.hobbies?`<div class="r-sec-title">Hobbies</div><div style="font-family:'DM Sans';font-size:13px;color:#475569">${esc(d.hobbies)}</div>`:''}
+    ${d.volunteers.length?`<div class="r-sec-title">Volunteer Work</div>${d.volunteers.map(v=>`<div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(v.role)} — ${esc(v.org)}</span><span class="r-entry-date">${esc(v.duration)}</span></div><div class="r-entry-desc">${esc(v.desc)}</div></div>`).join('')}`:''}
+    ${d.publications.length?`<div class="r-sec-title">Publications</div>${d.publications.map(p=>`<div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(p.title)}</span><span class="r-entry-date">${esc(p.year)}</span></div><div class="r-entry-sub">${esc(p.pub)}</div></div>`).join('')}`:''}
+    ${d.refType?`<div class="r-sec-title">References</div>${d.refType==='available'?'<div style="font-family:\'DM Sans\';font-size:13px;color:#475569">Available on request</div>':d.refs.map(r=>`<div class="r-entry"><div class="r-entry-title">${esc(r.name)}</div><div class="r-entry-sub">${esc(r.pos)}</div><div class="r-entry-date">${esc(r.contact)}</div></div>`).join('')}`:''}
+    ${d.declaration?`<div class="r-sec-title">Declaration</div><div style="font-family:'DM Sans';font-size:12px;color:#475569;font-style:italic">${esc(d.declaration)}</div>`:''}
+  </div>`;
+}
+
+/* ── MINIMAL ── */
+function renderMinimal(d){
+  const entryGrid = (title, sub, date, desc)=>`
+    <div class="r-entry">
+      <div class="r-entry-meta"><div class="r-entry-date">${esc(date)}</div></div>
+      <div><div class="r-entry-title">${esc(title)}</div><div class="r-entry-sub">${esc(sub)}</div>${desc?`<div class="r-entry-desc">${esc(desc)}</div>`:''}</div>
+    </div>`;
+  return `
+  <div class="tpl-minimal accent-${currentAccent}">
+    ${d.photo?`<img src="${d.photo}" class="r-photo">`:''}
+    <div class="r-name">${esc(d.name)||'Your Name'}</div>
+    <div class="r-role">${esc(d.title)||''}</div>
+    <div class="r-contacts">
+      ${[d.email,d.phone,d.address,d.linkedin,d.github,d.portfolio].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('')}
+    </div>
+    ${d.objective?`<div class="r-divider"></div><div class="r-sec-title">Objective</div><div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:12px">${esc(d.objective)}</div>`:''}
+    ${d.education.length?`<div class="r-divider"></div><div class="r-sec-title">Education</div>${d.education.map(e=>entryGrid(e.degree,e.college,e.year,e.cgpa)).join('')}`:''}
+    ${allSkills(d).length?`<div class="r-divider"></div><div class="r-sec-title">Skills</div><div style="margin-bottom:12px">${allSkills(d).map(s=>`<span class="r-skill-tag">${esc(s)}</span>`).join('')}</div>`:''}
+    ${d.projects.length?`<div class="r-divider"></div><div class="r-sec-title">Projects</div>${d.projects.map(p=>entryGrid(p.name,p.tech,'',p.desc+(p.link?' — '+p.link:''))).join('')}`:''}
+    ${d.internships.length?`<div class="r-divider"></div><div class="r-sec-title">Internships</div>${d.internships.map(i=>entryGrid(i.role,i.company,i.duration,i.work)).join('')}`:''}
+    ${d.certs.length?`<div class="r-divider"></div><div class="r-sec-title">Certifications</div>${d.certs.map(c=>entryGrid(c.name,c.issuer,c.year,'')).join('')}`:''}
+    ${d.achievements.length?`<div class="r-divider"></div><div class="r-sec-title">Achievements</div>${d.achievements.map(a=>entryGrid(a.title,'','',a.desc)).join('')}`:''}
+    ${d.languages.length||d.hobbies?`<div class="r-divider"></div><div class="r-sec-title">Other</div>`:''}
+    ${d.languages.length?`<div style="font-size:13px;color:#64748b;margin-bottom:8px"><strong>Languages:</strong> ${d.languages.map(l=>`${esc(l.lang)} (${esc(l.level)})`).join(', ')}</div>`:''}
+    ${d.hobbies?`<div style="font-size:13px;color:#64748b"><strong>Hobbies:</strong> ${esc(d.hobbies)}</div>`:''}
+    ${d.declaration?`<div class="r-divider"></div><div style="font-size:11px;color:#94a3b8;font-style:italic">${esc(d.declaration)}</div>`:''}
+  </div>`;
+}
+
+/* ── TECH ── */
+function renderTech(d){
+  return `
+  <div class="tpl-tech">
+    <div class="r-header">
+      ${photoEl('r-photo')}
+      <div>
+        <div class="r-name">${esc(d.name)||'your_name'}</div>
+        <div class="r-role">// ${esc(d.title)||'developer'}</div>
+        <div class="r-contacts">
+          ${[d.email,d.phone,d.address,d.github,d.linkedin,d.portfolio].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="r-body">
+      <div class="r-sidebar">
+        ${allSkills(d).length?`<div class="r-sec"><div class="r-sec-title">Skills</div>${allSkills(d).map(s=>`<span class="r-skill-tag">${esc(s)}</span>`).join('')}</div>`:''}
+        ${d.languages.length?`<div class="r-sec"><div class="r-sec-title">Languages</div>${d.languages.map(l=>`<div style="font-size:11px;color:#94a3b8;margin-bottom:5px">${esc(l.lang)} <span style="color:#22d3ee">${esc(l.level)}</span></div>`).join('')}</div>`:''}
+        ${d.certs.length?`<div class="r-sec"><div class="r-sec-title">Certs</div>${d.certs.map(c=>`<div style="font-size:11px;color:#94a3b8;margin-bottom:5px">${esc(c.name)}</div>`).join('')}</div>`:''}
+        ${d.hobbies?`<div class="r-sec"><div class="r-sec-title">Interests</div><div style="font-size:11px;color:#64748b">${esc(d.hobbies)}</div></div>`:''}
+      </div>
+      <div class="r-main">
+        ${d.objective?`<div class="r-sec"><div class="r-sec-title">About</div><div style="font-size:12px;color:#94a3b8;line-height:1.7">${esc(d.objective)}</div></div>`:''}
+        ${d.education.length?`<div class="r-sec"><div class="r-sec-title">Education</div>${d.education.map(e=>`
+          <div class="r-entry"><div class="r-entry-title">${esc(e.degree)}</div><div class="r-entry-sub">${esc(e.college)}</div><div class="r-entry-date">${esc(e.year)} ${e.cgpa?'| '+esc(e.cgpa):''}</div></div>`).join('')}</div>`:''}
+        ${d.projects.length?`<div class="r-sec"><div class="r-sec-title">Projects</div>${d.projects.map(p=>`
+          <div class="r-entry"><div class="r-entry-title">${esc(p.name)}</div><div class="r-entry-sub">${esc(p.tech)}</div><div class="r-entry-desc">${esc(p.desc)}${p.link?`<br><span style="color:#22d3ee">${esc(p.link)}</span>`:''}</div></div>`).join('')}</div>`:''}
+        ${d.internships.length?`<div class="r-sec"><div class="r-sec-title">Experience</div>${d.internships.map(i=>`
+          <div class="r-entry"><div class="r-entry-title">${esc(i.role)}</div><div class="r-entry-sub">${esc(i.company)}</div><div class="r-entry-date">${esc(i.duration)}</div><div class="r-entry-desc">${esc(i.work)}</div></div>`).join('')}</div>`:''}
+        ${d.achievements.length?`<div class="r-sec"><div class="r-sec-title">Achievements</div>${d.achievements.map(a=>`<div class="r-entry"><div class="r-entry-title">${esc(a.title)}</div><div class="r-entry-desc">${esc(a.desc)}</div></div>`).join('')}</div>`:''}
+        ${d.declaration?`<div class="r-sec" style="margin-top:20px"><div style="font-size:10px;color:#334155;font-style:italic">${esc(d.declaration)}</div></div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── FRESHER ── */
+function renderFresher(d){
+  return `
+  <div class="tpl-fresher accent-${currentAccent}">
+    <div class="r-header">
+      ${photoEl('r-photo')}
+      <div class="r-name">${esc(d.name)||'Your Name'}</div>
+      <div class="r-role">${esc(d.title)||'Fresher / Student'}</div>
+      <div class="r-contacts">
+        ${[d.email,d.phone,d.address,d.linkedin,d.github].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('')}
+      </div>
+    </div>
+    <div class="r-body">
+      ${d.objective?`<div class="r-sec-title">🎯 Career Objective</div><div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:12px">${esc(d.objective)}</div>`:''}
+      ${d.education.length?`<div class="r-sec-title">🎓 Education</div>${d.education.map(e=>`
+        <div class="r-entry">
+          <div class="r-entry-row"><span class="r-entry-title">${esc(e.degree)}</span><span class="r-entry-date">${esc(e.year)}</span></div>
+          <div class="r-entry-sub">${esc(e.college)}</div>
+          ${e.cgpa?`<div style="font-size:11px;color:#94a3b8">CGPA / %: ${esc(e.cgpa)}</div>`:''}
+        </div>`).join('')}`:''}
+      ${allSkills(d).length?`<div class="r-sec-title">🛠 Skills</div><div style="margin-bottom:12px">${allSkills(d).map(s=>`<span class="r-skill-tag">${esc(s)}</span>`).join('')}</div>`:''}
+      ${d.projects.length?`<div class="r-sec-title">💻 Projects</div>${d.projects.map(p=>`
+        <div class="r-entry">
+          <div class="r-entry-title">${esc(p.name)}</div>
+          <div class="r-entry-sub">${esc(p.tech)}</div>
+          <div class="r-entry-desc">${esc(p.desc)}</div>
+          ${p.link?`<div style="font-size:11px;color:#0284c7">${esc(p.link)}</div>`:''}
+        </div>`).join('')}`:''}
+      ${d.internships.length?`<div class="r-sec-title">🧑‍💼 Internships</div>${d.internships.map(i=>`
+        <div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(i.role)} — ${esc(i.company)}</span><span class="r-entry-date">${esc(i.duration)}</span></div><div class="r-entry-desc">${esc(i.work)}</div></div>`).join('')}`:''}
+      ${d.certs.length?`<div class="r-sec-title">🏆 Certifications</div>${d.certs.map(c=>`
+        <div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(c.name)}</span><span class="r-entry-date">${esc(c.year)}</span></div><div class="r-entry-sub">${esc(c.issuer)}</div></div>`).join('')}`:''}
+      ${d.achievements.length?`<div class="r-sec-title">🥇 Achievements</div>${d.achievements.map(a=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(a.title)}</div><div class="r-entry-desc">${esc(a.desc)}</div></div>`).join('')}`:''}
+      ${d.languages.length?`<div class="r-sec-title">🌐 Languages</div><div style="font-size:13px;color:#475569;margin-bottom:12px">${d.languages.map(l=>`${esc(l.lang)} (${esc(l.level)})`).join(' · ')}</div>`:''}
+      ${d.hobbies?`<div class="r-sec-title">🎨 Hobbies</div><div style="font-size:13px;color:#475569;margin-bottom:12px">${esc(d.hobbies)}</div>`:''}
+      ${d.volunteers.length?`<div class="r-sec-title">🤲 Volunteer Work</div>${d.volunteers.map(v=>`<div class="r-entry"><div class="r-entry-row"><span class="r-entry-title">${esc(v.role)} — ${esc(v.org)}</span><span class="r-entry-date">${esc(v.duration)}</span></div><div class="r-entry-desc">${esc(v.desc)}</div></div>`).join('')}`:''}
+      ${d.refType?`<div class="r-sec-title">👥 References</div>${d.refType==='available'?'<div style="font-size:13px;color:#475569">Available on request</div>':d.refs.map(r=>`<div class="r-entry"><div class="r-entry-title">${esc(r.name)}</div><div class="r-entry-sub">${esc(r.pos)}</div><div style="font-size:11px;color:#94a3b8">${esc(r.contact)}</div></div>`).join('')}`:''}
+      ${d.declaration?`<div class="r-sec-title">📝 Declaration</div><div style="font-size:12px;color:#475569;font-style:italic">${esc(d.declaration)}</div>`:''}
+    </div>
+  </div>`;
+}
+
+/* ── CREATIVE ── */
+function renderCreative(d){
+  return `
+  <div class="tpl-creative accent-${currentAccent}">
+    <div class="r-sidebar">
+      ${photoEl('r-photo')}
+      <div class="r-name">${esc(d.name)||'Your Name'}</div>
+      <div class="r-role">${esc(d.title)||''}</div>
+      <div class="r-sec-title">Contact</div>
+      ${d.email?`<div class="r-contact-item">✉ ${esc(d.email)}</div>`:''}
+      ${d.phone?`<div class="r-contact-item">📞 ${esc(d.phone)}</div>`:''}
+      ${d.address?`<div class="r-contact-item">📍 ${esc(d.address)}</div>`:''}
+      ${d.linkedin?`<div class="r-contact-item">🔗 ${esc(d.linkedin)}</div>`:''}
+      ${d.github?`<div class="r-contact-item">🐙 ${esc(d.github)}</div>`:''}
+      ${d.portfolio?`<div class="r-contact-item">🌐 ${esc(d.portfolio)}</div>`:''}
+      ${allSkills(d).length?`<div class="r-sec-title" style="margin-top:20px">Skills</div>${allSkills(d).map(s=>`<div class="r-skill-tag">${esc(s)}</div>`).join('')}`:''}
+      ${d.languages.length?`<div class="r-sec-title">Languages</div>${d.languages.map(l=>`<div style="font-size:11px;opacity:.85;margin-bottom:5px">${esc(l.lang)} — ${esc(l.level)}</div>`).join('')}`:''}
+      ${d.hobbies?`<div class="r-sec-title">Hobbies</div><div style="font-size:11px;opacity:.8;line-height:1.7">${esc(d.hobbies)}</div>`:''}
+    </div>
+    <div class="r-main">
+      ${d.objective?`<div class="r-main-title">Career Objective</div><div style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:12px">${esc(d.objective)}</div>`:''}
+      ${d.education.length?`<div class="r-main-title">Education</div>${d.education.map(e=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(e.degree)}</div><div class="r-entry-sub">${esc(e.college)}</div><div class="r-entry-date">${esc(e.year)}${e.cgpa?' · '+esc(e.cgpa):''}</div></div>`).join('')}`:''}
+      ${d.projects.length?`<div class="r-main-title">Projects</div>${d.projects.map(p=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(p.name)}</div><div class="r-entry-sub">${esc(p.tech)}</div><div class="r-entry-desc">${esc(p.desc)}${p.link?'<br><small>'+esc(p.link)+'</small>':''}</div></div>`).join('')}`:''}
+      ${d.internships.length?`<div class="r-main-title">Internships</div>${d.internships.map(i=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(i.role)}</div><div class="r-entry-sub">${esc(i.company)}</div><div class="r-entry-date">${esc(i.duration)}</div><div class="r-entry-desc">${esc(i.work)}</div></div>`).join('')}`:''}
+      ${d.certs.length?`<div class="r-main-title">Certifications</div>${d.certs.map(c=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(c.name)}</div><div class="r-entry-sub">${esc(c.issuer)}</div><div class="r-entry-date">${esc(c.year)}</div></div>`).join('')}`:''}
+      ${d.achievements.length?`<div class="r-main-title">Achievements</div>${d.achievements.map(a=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(a.title)}</div><div class="r-entry-desc">${esc(a.desc)}</div></div>`).join('')}`:''}
+      ${d.volunteers.length?`<div class="r-main-title">Volunteer Work</div>${d.volunteers.map(v=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(v.role)} — ${esc(v.org)}</div><div class="r-entry-date">${esc(v.duration)}</div><div class="r-entry-desc">${esc(v.desc)}</div></div>`).join('')}`:''}
+      ${d.publications.length?`<div class="r-main-title">Publications</div>${d.publications.map(p=>`
+        <div class="r-entry"><div class="r-entry-title">${esc(p.title)}</div><div class="r-entry-sub">${esc(p.pub)}</div><div class="r-entry-date">${esc(p.year)}</div></div>`).join('')}`:''}
+      ${d.refType?`<div class="r-main-title">References</div>${d.refType==='available'?'<div style="font-size:13px;color:#475569">Available on request</div>':d.refs.map(r=>`<div class="r-entry"><div class="r-entry-title">${esc(r.name)}</div><div class="r-entry-sub">${esc(r.pos)}</div><div class="r-entry-date">${esc(r.contact)}</div></div>`).join('')}`:''}
+      ${d.declaration?`<div style="margin-top:20px;font-size:11px;color:#94a3b8;font-style:italic;border-top:1px solid #f1f5f9;padding-top:12px">${esc(d.declaration)}</div>`:''}
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════
+   GENERATE & LIVE UPDATE
+══════════════════════════════════════ */
+function generateResume(){
+  const d = getData();
+  const renderers = { modern:renderModern, classic:renderClassic, minimal:renderMinimal, tech:renderTech, fresher:renderFresher, creative:renderCreative };
+  document.getElementById('resumeSheet').innerHTML = renderers[currentTemplate](d);
+}
+
+let debounceTimer;
+function liveUpdate(){
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(generateResume, 300);
+}
+
+/* ══════════════════════════════════════
+   EXPORT
+══════════════════════════════════════ */
+async function downloadPDF(){
+  generateResume();
+  await new Promise(r=>setTimeout(r,600));
+  const canvas = await html2canvas(document.getElementById('resumeSheet'),{scale:2,useCORS:true,allowTaint:true});
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p','mm','a4');
+  const w = 210, h = (canvas.height * w) / canvas.width;
+  pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,w,h);
+  pdf.save(`${document.getElementById('fullName').value||'resume'}.pdf`);
+}
+
+async function downloadPNG(){
+  generateResume();
+  await new Promise(r=>setTimeout(r,600));
+  const canvas = await html2canvas(document.getElementById('resumeSheet'),{scale:2,useCORS:true,allowTaint:true});
+  const a = document.createElement('a');
+  a.download = `${document.getElementById('fullName').value||'resume'}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+/* ══════════════════════════════════════
+   INIT — default entries + preview
+══════════════════════════════════════ */
+addEducation();
+addProject();
+generateResume();
+</script>
+</body>
+</html>
